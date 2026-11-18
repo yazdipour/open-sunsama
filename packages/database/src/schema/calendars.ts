@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
@@ -24,7 +24,7 @@ export const calendars = pgTable('calendars', {
   isDefaultForTasks: boolean('is_default_for_tasks').notNull().default(false),
   isReadOnly: boolean('is_read_only').notNull().default(false), // Provider-level permission
 
-  syncToken: varchar('sync_token', { length: 500 }), // Calendar-level sync token
+  syncToken: text('sync_token'), // Calendar-level sync token
 
   // Google `events.watch` push-notification channel state. NULL when
   // we don't have an active watch for the calendar (provider doesn't
@@ -72,7 +72,7 @@ export const insertCalendarSchema = createInsertSchema(calendars, {
   isDefaultForEvents: z.boolean().optional(),
   isDefaultForTasks: z.boolean().optional(),
   isReadOnly: z.boolean().optional(),
-  syncToken: z.string().max(500).optional(),
+  syncToken: z.string().optional(),
 });
 
 export const selectCalendarSchema = createSelectSchema(calendars);

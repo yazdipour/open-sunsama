@@ -34,7 +34,7 @@ export const calendarAccounts = pgTable(
     caldavUrl: varchar('caldav_url', { length: 500 }),
 
     // Sync state
-    syncToken: varchar('sync_token', { length: 500 }), // For incremental sync
+    syncToken: text('sync_token'), // For incremental sync
     lastSyncedAt: timestamp('last_synced_at'),
     syncStatus: varchar('sync_status', { length: 20 }).default('idle'), // 'idle' | 'syncing' | 'error'
     syncError: text('sync_error'),
@@ -76,7 +76,7 @@ export const insertCalendarAccountSchema = createInsertSchema(calendarAccounts, 
   tokenExpiresAt: z.date().optional(),
   caldavPasswordEncrypted: z.string().optional(),
   caldavUrl: z.url().max(500).optional(),
-  syncToken: z.string().max(500).optional(),
+  syncToken: z.string().optional(),
   syncStatus: z.enum(SYNC_STATUS_OPTIONS).optional(),
   syncError: z.string().optional(),
   webhookSubscriptionId: z.string().max(500).optional(),
