@@ -176,8 +176,9 @@ export class OutlookCalendarProvider implements CalendarProvider {
     if (options.syncToken) {
       url = options.syncToken;
     } else {
+      // No $top: Graph rejects it on delta/change-tracking queries.
+      // Page size is set via the Prefer: odata.maxpagesize header below.
       const params = new URLSearchParams({
-        $top: '250',
         $select: 'id,subject,body,location,start,end,isAllDay,recurrence,seriesMasterId,showAs,responseStatus,attendees,organizer,isOrganizer,onlineMeeting,onlineMeetingUrl,webLink,changeKey',
       });
 
