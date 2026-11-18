@@ -208,7 +208,10 @@ export class OutlookCalendarProvider implements CalendarProvider {
       });
 
       if (!response.ok) {
-        if (response.status === 410 || response.status === 400) {
+        // Only treat 400/410 as an expired delta token when we actually
+        // sent one. On a fresh sync a 400 is a malformed request and
+        // must surface Graph's real error, not trigger a pointless retry.
+        if (response.status === 410 || (response.status === 400 && options.syncToken)) {
           throw new Error('SYNC_TOKEN_INVALID');
         }
         // 401/403: token rejected or scope rescinded — typed error
